@@ -8,6 +8,7 @@ import { Loader } from "@/components/atoms/Loader";
 import { SearchForm } from "@/components/molecules/SearchForm";
 import { MainData } from "@/components/molecules/MainData";
 import { DaysList } from "@/components/molecules/DaysList";
+import { TemperatureSelector } from "@/components/molecules/TemperatureSelector";
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -51,7 +52,6 @@ const Home = () => {
         const dt = now - 604800;
 
         const { data: forecastResponse } = await axios.get(
-
           `${API_URL}/onecall?&lat=${lat}&lon=${lon}&units=${unit}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&dt=${dt}`
         );
         setForecastData(forecastResponse);
@@ -112,10 +112,11 @@ const Home = () => {
         {isLoading && <Loader isLoading={isLoading} />}
         {!!forecastData?.daily?.length && !isLoading && (
           <div className="flex flex-col mt-4">
+            <TemperatureSelector setUnit={setUnit} unit={unit} />
+
             <DaysList
               forecastData={forecastData}
               unit={unit}
-              setUnit={setUnit}
             />
           </div>
         )}
