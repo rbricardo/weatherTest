@@ -51,7 +51,8 @@ const Home = () => {
         const dt = now - 604800;
 
         const { data: forecastResponse } = await axios.get(
-          `https://api.openweathermap.org/data/2.5/onecall?&lat=${lat}&lon=${lon}&units=${unit}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&dt=${dt}`
+
+          `${API_URL}/onecall?&lat=${lat}&lon=${lon}&units=${unit}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&dt=${dt}`
         );
         setForecastData(forecastResponse);
         setRecentSearches((prevSearches) => {
