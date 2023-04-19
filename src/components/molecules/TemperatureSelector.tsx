@@ -1,7 +1,15 @@
 import React from "react";
 import cx from "classnames";
 
-export const TemperatureSelector = ({ setUnit, unit }) => {
+type TemperatureSelectorType = {
+  setUnit: (value: string) => void;
+  unit: string;
+};
+
+export const TemperatureSelector = ({
+  setUnit,
+  unit,
+}: TemperatureSelectorType) => {
   return (
     <div className="flex self-end">
       <button
