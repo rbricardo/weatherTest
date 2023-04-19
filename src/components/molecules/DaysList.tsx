@@ -4,7 +4,7 @@ import Image from "next/image";
 import { convertTemp } from "@/utils";
 
 import { TemperatureSelector } from "./TemperatureSelector";
-import { ForecastType } from "@/types";
+import type { ForecastType } from "@/types";
 
 type DaysListType = {
   forecastData: ForecastType,

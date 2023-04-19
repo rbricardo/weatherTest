@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 
 import { convertTemp } from "@/utils";
-import { WeatherType } from "@/types";
+import type { WeatherType } from "@/types";
 
 type MainDataType = {
   city: string;

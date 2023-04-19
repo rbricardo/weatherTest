@@ -9,8 +9,8 @@ import { SearchForm } from "@/components/molecules/SearchForm";
 import { MainData } from "@/components/molecules/MainData";
 import { DaysList } from "@/components/molecules/DaysList";
 
-const API_KEY = "b45534abcf14eaa6846ac21e90ffd95b";
-const API_URL = "https://api.openweathermap.org/data/2.5";
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Home = () => {
   const [weather, setWeather] = useState<WeatherType | null>(null);
