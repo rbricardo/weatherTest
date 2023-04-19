@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-import { WeatherType } from "@/types";
+import type { WeatherType, ForecastType } from "@/types";
 import { RecentSearch } from "@/components/molecules/RecentSearch";
 import { Loader } from "@/components/atoms/Loader";
 import { SearchForm } from "@/components/molecules/SearchForm";
@@ -17,7 +17,7 @@ const Home = () => {
   const [city, setCity] = useState("");
   const [unit, setUnit] = useState<string>("imperial");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [forecastData, setForecastData] = useState<any>([]);
+  const [forecastData, setForecastData] = useState<ForecastType | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = (e: any) => {

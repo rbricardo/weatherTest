@@ -1,9 +1,16 @@
 import React from "react";
-import Image from 'next/image'
+import Image from "next/image";
 
 import { convertTemp } from "@/utils";
+import { WeatherType } from "@/types";
 
-export const MainData = ({city, unit, weather}) => {
+type MainDataType = {
+  city: string;
+  unit: string;
+  weather: WeatherType;
+};
+
+export const MainData = ({ city, unit, weather }: MainDataType) => {
   return (
     <div className="flex flex-col gap-4 mt-8">
       <h1 className="text-4xl uppercase">{city}</h1>

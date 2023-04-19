@@ -2,9 +2,17 @@ import React from "react";
 import Image from "next/image";
 
 import { convertTemp } from "@/utils";
-import { TemperatureSelector } from "./TemperatureSelector";
 
-export const DaysList = ({ forecastData, unit, setUnit }) => {
+import { TemperatureSelector } from "./TemperatureSelector";
+import { ForecastType } from "@/types";
+
+type DaysListType = {
+  forecastData: ForecastType,
+  unit: string,
+  setUnit: (value: string) => void
+}
+
+export const DaysList = ({ forecastData, unit, setUnit }: DaysListType) => {
   return (
     <>
       <TemperatureSelector setUnit={setUnit} unit={unit} />
@@ -62,7 +70,7 @@ export const DaysList = ({ forecastData, unit, setUnit }) => {
                 </p>
                 <div className="border-2 mt-2 bg-purple-700 text-white rounded-md">
                   <p>Rainfall</p>
-                  <p> {rain} mm</p>
+                  <p>{rain} mm</p>
                 </div>
               </div>
             </div>

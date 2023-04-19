@@ -1,6 +1,12 @@
 import React from "react";
 
-export const SearchForm = ({ handleSubmit, city, setCity }) => {
+type SearchFormType = {
+  handleSubmit: any,
+  city: string,
+  setCity: (value: string) => void
+}
+
+export const SearchForm = ({ handleSubmit, city, setCity }: SearchFormType) => {
   return (
     <form className="flex gap-4" onSubmit={handleSubmit}>
       <div className="mb-4">

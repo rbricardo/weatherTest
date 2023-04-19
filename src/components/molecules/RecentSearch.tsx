@@ -1,6 +1,14 @@
 import React from "react";
 
-export const RecentSearch = ({ recentSearches, handleRecentSearch }) => {
+type RecentSearchType = {
+  recentSearches: string[];
+  handleRecentSearch: (value: string) => void;
+};
+
+export const RecentSearch = ({
+  recentSearches,
+  handleRecentSearch,
+}: RecentSearchType) => {
   return (
     <div className="bg-white rounded-md border-2 p-4 mt-8">
       <h3 className="text-lg font-medium mb-2">Recent Searches</h3>
