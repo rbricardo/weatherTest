@@ -1,12 +1,24 @@
-import { WeatherType } from "@/types";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+import { WeatherType } from "@/types";
+import { RecentSearch } from "@/components/molecules/RecentSearch";
+import { Loader } from "@/components/atoms/Loader";
+import { SearchForm } from "@/components/molecules/SearchForm";
+import { MainData } from "@/components/molecules/MainData";
+import { DaysList } from "@/components/molecules/DaysList";
+
+const API_KEY = "b45534abcf14eaa6846ac21e90ffd95b";
+const API_URL = "https://api.openweathermap.org/data/2.5";
 
 const Home = () => {
   const [weather, setWeather] = useState<WeatherType | null>(null);
   const [city, setCity] = useState("");
   const [unit, setUnit] = useState<string>("imperial");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  console.log(weather, "weather");
+  const [forecastData, setForecastData] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -14,20 +26,34 @@ const Home = () => {
   };
 
   const handleRecentSearch = (recentSearch: string) => {
+    if (city === recentSearch)
+      return toast(`You already is checking ${city}'s weather`, {
+        duration: 2000,
+      });
     setCity(recentSearch);
     fetchData(recentSearch);
   };
 
   const fetchData = async (selectedCity?: string) => {
+    setIsLoading(true);
     try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${
+      const res = await axios.get(
+        `${API_URL}/weather?q=${
           selectedCity || city
-        }&units=imperial&appid=748cc29e99f0a79421000ea6ef047204`
+        }&units=${unit}&appid=${API_KEY}`
       );
-      const data = await res.json();
+      const { data } = res;
       setWeather(data);
       if (data.main) {
+        const lat = data?.coord?.lat;
+        const lon = data?.coord?.lon;
+        const now = Math.floor(Date.now() / 1000);
+        const dt = now - 604800;
+
+        const { data: forecastResponse } = await axios.get(
+          `https://api.openweathermap.org/data/2.5/onecall?&lat=${lat}&lon=${lon}&units=${unit}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&dt=${dt}`
+        );
+        setForecastData(forecastResponse);
         setRecentSearches((prevSearches) => {
           if (prevSearches.length === 5) {
             return [
@@ -41,8 +67,12 @@ const Home = () => {
       } else {
         setWeather(null);
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast.error(error.response.data.message, {
+        duration: 2000,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,119 +83,42 @@ const Home = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const toggleUnit = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUnit(e.target.value);
-  };
-
-  const convertTemp = (temp: number, unit: string) => {
-    if (unit === "metric") {
-      return ((temp - 32) * 5) / 9;
-    }
-    return temp;
-  };
-
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-4">
-          Previsão do tempo para {weather?.name}
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="city"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              City
-            </label>
-            <input
-              id="city"
-              type="text"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Search
-          </button>
-        </form>
-        {weather?.main && (
-          <div>
-            <div className="flex justify-between mt-8">
-              <div>
-                <p className="text-lg font-bold">
-                  {Math.round(convertTemp(weather.main.temp, unit))}
-                  {unit === "imperial" ? "°F" : "°C"}
-                </p>
-                <p>{weather.weather[0].description}</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold">
-                  {Math.round(weather.wind.speed)} km/h
-                </p>
-                <p>Wind Speed</p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <label htmlFor="celsius" className="mr-2">
-                Celsius
-              </label>
-              <input
-                id="celsius"
-                type="radio"
-                name="unit"
-                value="metric"
-                checked={unit === "metric"}
-                onChange={toggleUnit}
-              />
-              <label htmlFor="fahrenheit" className="ml-4 mr-2">
-                Fahrenheit
-              </label>
-              <input
-                id="fahrenheit"
-                type="radio"
-                name="unit"
-                value="imperial"
-                checked={unit === "imperial"}
-                onChange={toggleUnit}
-              />
-            </div>
-          </div>
-        )}
-        {!weather?.main && (
-          <div className="flex justify-between mt-8">
+    <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 w-screen">
+      <div className="flex rounded-3xl min-h-[800px] min-w-[1200px] bg-gray-100 pr-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 w-1/3 h-full">
+          <SearchForm
+            handleSubmit={handleSubmit}
+            city={city}
+            setCity={setCity}
+          />
+          {weather?.main && (
             <div>
-              <p className="text-red-400 font-bold uppercase">
-                {weather?.message}
-              </p>
+              {isLoading ? (
+                <Loader isLoading={isLoading} />
+              ) : (
+                <MainData city={city} unit={unit} weather={weather} />
+              )}
+              {recentSearches.length > 0 && !isLoading && (
+                <RecentSearch
+                  recentSearches={recentSearches}
+                  handleRecentSearch={handleRecentSearch}
+                />
+              )}
             </div>
+          )}
+        </div>
+        {isLoading && <Loader isLoading={isLoading} />}
+        {!!forecastData?.daily?.length && !isLoading && (
+          <div className="flex flex-col mt-4">
+            <DaysList
+              forecastData={forecastData}
+              unit={unit}
+              setUnit={setUnit}
+            />
           </div>
         )}
       </div>
-      {recentSearches.length > 0 && (
-        <div className="bg-white rounded-md shadow-md p-4 mt-8">
-          <h3 className="text-lg font-medium mb-2">Recent Searches</h3>
-          <ul className="list-disc pl-4">
-            {recentSearches.map((recentSearch, index) => (
-              <li
-                key={index}
-                className="mb-1 cursor-pointer"
-                onClick={() => handleRecentSearch(recentSearch)}
-              >
-                {recentSearch}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
