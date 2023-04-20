@@ -41,7 +41,7 @@ export const DaysList = ({ forecastData, unit }: DaysListType) => {
         return (
           <div
             key={i}
-            className="py-4 h-96 text-center rounded-lg m-2 bg-white overflow-hidden shadow-lg"
+            className="py-4 h-96 min-w-[250px] text-center rounded-lg m-2 bg-white overflow-hidden shadow-lg"
           >
             <div className="px-6 py-4">
               <div className="font-bold text-xl mb-2">

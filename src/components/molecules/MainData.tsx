@@ -15,7 +15,7 @@ export const MainData = ({ city, unit, weather }: MainDataType) => {
     <div className="flex flex-col gap-4 mt-8">
       <h1 className="text-4xl uppercase">{city}</h1>
       <div>
-        <p className="text-lg font-bold">
+        <p className="text-3xl font-bold">
           {Math.round(convertTemp(weather.main.temp, unit))}
           {unit === "imperial" ? "°F" : "°C"}
         </p>

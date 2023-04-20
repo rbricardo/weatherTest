@@ -15,7 +15,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Home = () => {
   const [weather, setWeather] = useState<WeatherType | null>(null);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState<string>("");
+  const [cityName, setCityName] = useState<string>("");
   const [unit, setUnit] = useState<string>("imperial");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [forecastData, setForecastData] = useState<ForecastType | null>(null);
@@ -23,6 +24,7 @@ const Home = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    setCityName(city);
     fetchData();
   };
 
@@ -32,11 +34,15 @@ const Home = () => {
         duration: 2000,
       });
     setCity(recentSearch);
+    setCityName(recentSearch);
     fetchData(recentSearch);
   };
 
   const fetchData = async (selectedCity?: string) => {
     setIsLoading(true);
+    setWeather(null);
+    setForecastData(null);
+    setUnit("imperial");
     try {
       const res = await axios.get(
         `${API_URL}/weather?q=${
@@ -86,7 +92,7 @@ const Home = () => {
 
   return (
     <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-r from-cyan-500 to-blue-500 w-screen">
-      <div className="flex rounded-3xl min-h-[800px] min-w-[1200px] bg-gray-100 pr-4">
+      <div className="flex rounded-3xl min-h-[800px] w-[1600px] bg-gray-100 pr-4">
         <div className="bg-white rounded-lg shadow-lg p-8 w-1/3 h-full">
           <SearchForm
             handleSubmit={handleSubmit}
@@ -98,7 +104,7 @@ const Home = () => {
               {isLoading ? (
                 <Loader isLoading={isLoading} />
               ) : (
-                <MainData city={city} unit={unit} weather={weather} />
+                <MainData city={cityName} unit={unit} weather={weather} />
               )}
               {recentSearches.length > 0 && !isLoading && (
                 <RecentSearch
@@ -113,11 +119,7 @@ const Home = () => {
         {!!forecastData?.daily?.length && !isLoading && (
           <div className="flex flex-col mt-4">
             <TemperatureSelector setUnit={setUnit} unit={unit} />
-
-            <DaysList
-              forecastData={forecastData}
-              unit={unit}
-            />
+            <DaysList forecastData={forecastData} unit={unit} />
           </div>
         )}
       </div>
