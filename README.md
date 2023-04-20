@@ -10,10 +10,12 @@
 
 A Weather app using *OpenWeatherMap*
 
+You can check the app here: https://weather-test-sage.vercel.app/
+
 ### Install
 
 ```shell
-$ yarn
+$ pnpm install
 ```
 
 ## Env
@@ -29,5 +31,5 @@ API_URL=https://api.openweathermap.org/data/2.5
 ## Running the Project
 
 ```shell
-$ yarn dev
+$ pnpm dev
 ```
